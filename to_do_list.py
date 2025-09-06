@@ -12,7 +12,7 @@ def add():
     '''
     tasks = {}
     while True:
-        task = input("Enter you task: ").title()
+        task = input("Enter your task: ").title()
         tasks[task] = "In Progress"
 
         add_more = input("Do you like to add more tasks? [y/n] ").lower()
