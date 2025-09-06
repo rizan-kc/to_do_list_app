@@ -27,7 +27,32 @@ def add():
     
 
 def mark_complete():
-    pass
+    while True:
+        with open("tasks_list.txt","r") as f:
+            x = f.readlines()
+            task = dict() # using the dictionary to rewrite over the file
+            for t in x:
+                t = t.rstrip("\n")
+                taskn,statusn = t.split(":")
+                task[taskn.rstrip()] = statusn.lstrip()
+            
+        print(task)
+        while True:
+            task_to_mark = input("Enter the task, you want to mark as complete: ").title()
+            if task_to_mark not in task:
+                print("Invalid task to be marked!")
+            else:
+                task[task_to_mark] = "Completed"
+                break
+        with open("tasks_list.txt","w") as f:
+            for t in task:
+                f.write(t + " : " + task[t] + "\n") 
+            print("Task marked as complete successfully!")
+        option_mark = input("Do you want to mark another task as complete? [y/n]\n").lower()
+        if option_mark == "y":
+            continue
+        else:
+            break
 
 def delete_task():
     pass
