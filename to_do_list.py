@@ -25,16 +25,25 @@ def add():
         for t in tasks:
             f.write(t + " : " + tasks[t] + "\n")
     
-
-def mark_complete():
-    while True:
-        with open("tasks_list.txt","r") as f:
+def load_task():
+    with open("tasks_list.txt","r") as f:
             x = f.readlines()
-            task = dict() # using the dictionary to rewrite over the file
+            tasks = dict() # using the dictionary to rewrite over the file
             for t in x:
                 t = t.rstrip("\n")
                 taskn,statusn = t.split(":")
-                task[taskn.rstrip()] = statusn.lstrip()
+                tasks[taskn.rstrip()] = statusn.lstrip()
+    return tasks
+
+def save_tasks(tasks):
+    with open("tasks_list.txt","w") as f:
+        for t in tasks:
+            f.write(t + " : " + tasks[t] + "\n")
+    
+
+def mark_complete():
+    while True:
+        task = load_task()
             
         print(task)
         while True:
@@ -44,9 +53,7 @@ def mark_complete():
             else:
                 task[task_to_mark] = "Completed"
                 break
-        with open("tasks_list.txt","w") as f:
-            for t in task:
-                f.write(t + " : " + task[t] + "\n") 
+        save_tasks(task)
         print("Task marked as complete successfully!")
         option_mark = input("Do you want to mark another task as complete? [y/n]\n").lower()
         if option_mark == "y":
@@ -56,14 +63,7 @@ def mark_complete():
 
 def delete_task():
     while True:
-        with open("tasks_list.txt","r") as f:
-            x = f.readlines()
-            task = dict() # using the dictionary to rewrite over the file
-            for t in x:
-                t = t.rstrip("\n")
-                taskn,statusn = t.split(":")
-                task[taskn.rstrip()] = statusn.lstrip()
-            
+        task = load_task()
         print(task)
         while True:
             task_to_delete = input("Enter the task, you want to delete: ").title()
@@ -72,10 +72,8 @@ def delete_task():
             else:
                 task.pop(task_to_delete)
                 break
-        with open("tasks_list.txt","w") as f:
-            for t in task:
-                f.write(t + " : " + task[t] + "\n") 
-        print("Task Deleted successfully!")
+        save_tasks(task)
+        print("Task deleted successfully!")
         option_mark = input("Do you want to delete another task? [y/n]\n").lower()
         if option_mark == "y":
             continue
@@ -85,6 +83,20 @@ def delete_task():
 while True:
 
     print("\t\t\tWelcome To-Do List App")
+    try:
+        with open("tasks_list.txt","r") as fr:
+            x = fr.readlines()
+            print("\t\tThese are your current tasks: ")
+            print("Task " + "\t\t | " + " Progress")
+            for i in x:
+                print(i, end = "")
+    except FileNotFoundError:
+        print("Since the task list is empty. You are left with two options.")
+        options = input("Add a task or quit the app: ").lower()
+        if options == "add":
+            add()
+        else:
+            quit()
     
     options = input("\nWhat would you like to do? [add/markcomplete/delete/quit] ").lower()
 
